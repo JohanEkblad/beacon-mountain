@@ -20,9 +20,9 @@ public class ClientData {
         double lng = -1d;
         for(int i=2; i<split.length; i++) {
             if(i%3==0) {
-                Double.parseDouble(split[i]);
+                lat = Double.parseDouble(split[i]);
             } else if(i%3==1) {
-                Double.parseDouble(split[i]);
+                lng = Double.parseDouble(split[i]);
             } else if(i%3==2) {
                 nickname = split[i];
             }

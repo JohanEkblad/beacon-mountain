@@ -103,8 +103,11 @@ public class LocationListener implements android.location.LocationListener {
                     Log.v(TAG, "After sendOneMessage");
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
                     if (msg.startsWith("DATA")) {
+                        Log.v(TAG, "Parsing message: " + msg);
                         List<ClientData> clientData = ClientData.fromDATA(msg);
+                        Log.v(TAG, "Number of clients: " + clientData.size());
                         for(ClientData data : clientData) {
+                            Log.v(TAG, data.getNickname() + "lat: " + data.getLatitude() + "lng: " + data.getLongitude());
                             Database.update(data);
                         }
                         Log.v("msg", "message parsed");
