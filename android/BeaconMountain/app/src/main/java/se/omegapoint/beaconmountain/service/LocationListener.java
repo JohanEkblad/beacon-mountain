@@ -81,9 +81,8 @@ public class LocationListener implements android.location.LocationListener {
         if(location == null)
             return;
         Database.setLastLocation(location);
-        Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":Y\0");
         if(Database.getServerIp() != null) {
-            Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + "Y:\0");
+            Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":?\0");
         }else{
             Log.v(TAG, "Server IP not known. Would've sent: " + location);
         }
@@ -92,19 +91,20 @@ public class LocationListener implements android.location.LocationListener {
 
     private class SendLocationTask extends AsyncTask<Location, Integer, Void> {
         protected Void doInBackground(Location... location) {
-            Log.v(TAG, "Doing stuff in background");
+            Log.v(TAG, "Doing stuff in background serverIP="+Database.getServerIp()+" isClient="+Database.isClient());
             if (Database.getServerIp() != null && Database.isClient()) {
                 Log.v(TAG, "ServerIP:" + Database.getServerIp());
 
                 try {
                     Socket socket = SocketFactory.getDefault().createSocket(Database.getServerIp(), 4711);
+                    Log.v(TAG, "Connected to socket");
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
-
+                    Log.v(TAG, "After sendOneMessage");
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
                     if (msg.startsWith("HELO")) {
-                        ClientData clientData = new ClientData(msg);
+                        //ClientData clientData = new ClientData(msg);
                         //displayMessage(clientData.toString());
-                        Database.update(clientData);
+                        //Database.update(clientData);
                         Log.v("msg", "message parsed");
                     } else {
                         Log.v("msg", "YAPP error");

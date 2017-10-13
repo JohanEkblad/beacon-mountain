@@ -49,7 +49,6 @@ public class DialogHelper {
                 String ip = edittext.getText().toString();
                 if(ip != null && !ip.isEmpty()) {
                     Database.setServerIp(ip);
-                        activity.hideFabButton();
                 }
             }
         });
