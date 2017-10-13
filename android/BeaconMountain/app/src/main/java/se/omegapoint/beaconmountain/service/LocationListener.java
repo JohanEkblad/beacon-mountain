@@ -3,6 +3,7 @@ package se.omegapoint.beaconmountain.service;
 
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -71,12 +72,11 @@ public class LocationListener implements android.location.LocationListener {
 
     }
 
-    private void storeData(Location location) {
-        notifyLocationUpdate(location);
-    }
 
-    private void notifyLocationUpdate(Location location) {
+    public void notifyLocationUpdate(Location location) {
         Log.v(TAG, "Sending broadcast");
+        if(location == null)
+            return;
         Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":Y\0");
         if(Database.getServerIp() != null) {
             Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + "Y:\0");
@@ -103,15 +103,6 @@ public class LocationListener implements android.location.LocationListener {
             }
             return null;
         }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Long result) {
-
-        }
-
     }
 
 }

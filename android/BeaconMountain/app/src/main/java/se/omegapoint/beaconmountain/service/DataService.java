@@ -100,6 +100,7 @@ public class DataService extends Service {
         }
 
         locationListener = new LocationListener(this, prefs);
+        locationListener.notifyLocationUpdate(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, locationListener.GPS_MIN_TIME_MILLIS,
                 0, locationListener);

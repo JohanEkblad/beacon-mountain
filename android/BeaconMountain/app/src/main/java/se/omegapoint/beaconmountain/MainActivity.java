@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.annotation.NonNull;
@@ -24,6 +25,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.net.ServerSocketFactory;
+
+import android.view.View;
 import android.widget.Toast;
 
 import se.omegapoint.beaconmountain.data.Database;
@@ -55,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startServer();
         }
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickContact();
+            }
+        });
+
     }
 
     private void startClient() {
@@ -91,10 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-        prefs = new Preferences(this);
-        startService(new Intent(this, DataService.class));
-        requestUserId();
-        pickContact();
     }
 
     @Override
