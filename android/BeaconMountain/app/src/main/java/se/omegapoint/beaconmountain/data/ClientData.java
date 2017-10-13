@@ -39,8 +39,8 @@ public class ClientData {
             location.setLongitude(longitude);
         }
 
-        if (parts[4] == "Y" || parts[4] == "N") {
-            answer = parts[4] == "Y";
+        if (parts[4].equals("Y") || parts[4].equals("N")) {
+            answer = parts[4].equals("Y");
         } else {
             throw new RuntimeException("Illegal answer");
         }
