@@ -100,12 +100,8 @@ public class ClientData {
     public String toString(){
         StringBuffer sb = new StringBuffer("");
         sb.append(nickname);
-        Location ownLocation = Database.getLastLocation();
-        if(getLocation() != null && ownLocation != null){
-            sb.append(" - distance: ").append(ownLocation.distanceTo(getLocation()));
-        }else{
-            sb.append("Either own location or remote location unset");
-        }
+        sb.append("Latitude: ").append(latitude);
+        sb.append("Longitude: ").append(longitude);
         return sb.toString();
     }
 

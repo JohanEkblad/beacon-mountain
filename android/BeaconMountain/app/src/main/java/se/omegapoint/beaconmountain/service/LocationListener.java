@@ -104,6 +104,7 @@ public class LocationListener implements android.location.LocationListener {
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
                     if (msg.startsWith("DATA")) {
                         List<ClientData> clientData = ClientData.fromDATA(msg);
+                        Log.v(TAG, clientData.toString());
                         for(ClientData data : clientData) {
                             Database.update(data);
                         }
