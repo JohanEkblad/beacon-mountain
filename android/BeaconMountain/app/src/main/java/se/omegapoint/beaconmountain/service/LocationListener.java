@@ -20,6 +20,9 @@ import se.omegapoint.beaconmountain.Preferences;
 import se.omegapoint.beaconmountain.data.ClientData;
 import se.omegapoint.beaconmountain.data.Database;
 
+import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
+import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
+
 
 public class LocationListener implements android.location.LocationListener {
     private static final String TAG = LocationListener.class.getSimpleName();
@@ -98,6 +101,14 @@ public class LocationListener implements android.location.LocationListener {
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
 
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
+                    if (msg.startsWith("HELO")) {
+                        ClientData clientData = new ClientData(msg);
+                        //displayMessage(clientData.toString());
+                        Database.update(clientData);
+                        Log.v("msg", "message parsed");
+                    } else {
+                        Log.v("msg", "YAPP error");
+                    }
                     Log.v(TAG, "Got message: " + msg);
                     socket.close();
                 } catch (IOException e) {
