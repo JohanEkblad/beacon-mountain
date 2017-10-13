@@ -77,6 +77,7 @@ public class LocationListener implements android.location.LocationListener {
         Log.v(TAG, "Sending broadcast");
         if(location == null)
             return;
+        Database.setLastLocation(location);
         Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":Y\0");
         if(Database.getServerIp() != null) {
             Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + "Y:\0");
