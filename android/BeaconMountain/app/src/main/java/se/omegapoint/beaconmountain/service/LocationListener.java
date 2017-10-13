@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.List;
 
 import javax.net.SocketFactory;
 
@@ -101,10 +102,11 @@ public class LocationListener implements android.location.LocationListener {
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
 
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
-                    if (msg.startsWith("HELO")) {
-                        ClientData clientData = new ClientData(msg);
-                        //displayMessage(clientData.toString());
-                        Database.update(clientData);
+                    if (msg.startsWith("DATA")) {
+                        List<ClientData> clientData = ClientData.fromDATA(msg);
+                        for(ClientData data : clientData) {
+                            Database.update(data);
+                        }
                         Log.v("msg", "message parsed");
                     } else {
                         Log.v("msg", "YAPP error");
