@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BeaconMountain</string>
+    <string name="service_name">BeaconMountainService</string>
 </resources>
