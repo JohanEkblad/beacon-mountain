@@ -30,4 +30,25 @@ public class DialogHelper {
         alert.show();
     }
 
+    public static void selectClientOrServerDialog(final Activity activity, final Preferences prefs, String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setCancelable(false);
+        final EditText edittext = new EditText(activity);
+
+        alert.setMessage(message);
+        alert.setTitle("Server ip");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String ip = edittext.getText().toString();
+                if(ip != null && !ip.isEmpty()) {
+                    prefs.setServerIp(ip);
+                }
+            }
+        });
+        alert.show();
+    }
+
 }

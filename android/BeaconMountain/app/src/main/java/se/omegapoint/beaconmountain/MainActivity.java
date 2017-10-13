@@ -38,6 +38,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = new Preferences(this);
+        startService(new Intent(this, DataService.class));
+        requestUserId();
+        requestIp();
+        if (prefs.getServerIp() != null) {
+            startClient();
+        } else {
+            startServer();
+        }
+    }
+
+    private void startClient() {
+        //TODO
+    }
+
+    private void startServer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -66,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-        prefs = new Preferences(this);
-        startService(new Intent(this, DataService.class));
-        requestUserId();
     }
 
     @Override
@@ -96,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
             DialogHelper.selectUserDialog(this, prefs, "Choose your user");
     }
 
+    private void requestIp() {
+        DialogHelper.selectClientOrServerDialog(this,prefs,"Enter server IP or leave blank:");
+    }
     private void requestPermissionForLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
