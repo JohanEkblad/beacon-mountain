@@ -1,9 +1,12 @@
 package se.omegapoint.beaconmountain.data;
 
+import android.location.Location;
+
 public class ClientData {
     private String nickname;
-    private double latitude;
-    private double longitude;
+    private double latitude = -1d;
+    private double longitude = -1d;
+    private Location location = null;
     private boolean answer;
 
     public ClientData(String protocolMessage)
@@ -30,6 +33,12 @@ public class ClientData {
             throw new RuntimeException("Illegal longitude");
         }
 
+        if(longitude != -1d && latitude != -1d){
+            location = new Location("");
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
+        }
+
         if (parts[4] == "Y" || parts[4] == "N") {
             answer = parts[4] == "Y";
         } else {
@@ -42,15 +51,28 @@ public class ClientData {
         return this.nickname;
     }
 
-    public double getLatitude() {
-        return this.latitude;
+    public Location getLocation() {
+        return this.location;
     }
 
-    public double getLongitude() {
-        return this.longitude;
-    }
+    public double getLatitude(){ return this.latitude;}
+
+    public double getLongitude(){return this.longitude;}
 
     public boolean answer() {
         return this.answer;
     }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer("");
+        sb.append(nickname);
+        Location ownLocation = Database.getLastLocation();
+        if(getLocation() != null && ownLocation != null){
+            sb.append(" - distance: ").append(ownLocation.distanceTo(getLocation()));
+        }else{
+            sb.append("Either own location or remote location unset");
+        }
+        return sb.toString();
+    }
+
 }

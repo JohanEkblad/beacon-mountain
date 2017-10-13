@@ -27,6 +27,7 @@ import java.net.Socket;
 import javax.net.ServerSocketFactory;
 
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import se.omegapoint.beaconmountain.data.Database;
@@ -44,11 +45,15 @@ public class MainActivity extends AppCompatActivity {
     private DataService service;
     private Preferences prefs;
 
+    private TextView messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        messages = (TextView)findViewById(R.id.messages);
+
         prefs = new Preferences(this);
         startService(new Intent(this, DataService.class));
         requestUserId();
@@ -107,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    private void displayMessage(String message){
+        messages.setText(message + "\n" + messages.getText());
     }
 
     @Override
