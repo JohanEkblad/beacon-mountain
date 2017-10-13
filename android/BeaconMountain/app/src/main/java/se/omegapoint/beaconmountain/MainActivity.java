@@ -78,12 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startClient() {
+    public void startClient() {
         //TODO
 
     }
 
-    private void startServer() {
+    public void startServer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         String msg = readOneMessage(client.getInputStream());
                         if (msg.startsWith("HELO")) {
                             ClientData clientData = new ClientData(msg);
+                            displayMessage(clientData.toString());
                             Database.update(clientData);
                             Log.v("msg", "message parsed");
                             sendAnswerMessage(client.getOutputStream(), clientData);

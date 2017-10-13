@@ -34,7 +34,7 @@ public class DialogHelper {
         alert.show();
     }
 
-    public static void serverIPDialog(final Activity activity, final Preferences prefs, String message) {
+    public static void serverIPDialog(final MainActivity activity, final Preferences prefs, String message) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setCancelable(false);
         final EditText edittext = new EditText(activity);
@@ -49,13 +49,14 @@ public class DialogHelper {
                 String ip = edittext.getText().toString();
                 if(ip != null && !ip.isEmpty()) {
                     Database.setServerIp(ip);
+                        activity.startClient();
                 }
             }
         });
         alert.show();
     }
 
-    public static void selectClientOrServerDialog(final Activity activity, final Preferences prefs) {
+    public static void selectClientOrServerDialog(final MainActivity activity, final Preferences prefs) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setCancelable(false);
         final RadioButton radioButton = new RadioButton(activity);
@@ -78,6 +79,8 @@ public class DialogHelper {
                 }
                 if(Database.isClient()) {
                     serverIPDialog(activity, prefs, "Enter IP or leave blank for receiving IP via SMS");
+                } else {
+                    activity.startServer();
                 }
             }
         });
