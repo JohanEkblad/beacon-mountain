@@ -52,10 +52,15 @@ public class MainActivity extends AppCompatActivity {
         prefs = new Preferences(this);
         startService(new Intent(this, DataService.class));
         requestUserId();
-        requestIp();
-        if (prefs.getServerIp() != null) {
+        if (Database.isClient() == null) {
+            requestClientOrServer();
+        }
+        if (Database.isClient() != null && Database.isClient()) {
+            requestIp();
+        }
+        if (Database.isClient() != null && Database.isClient()) {
             startClient();
-        } else {
+        } else if (Database.isClient() != null && !Database.isClient()){
             startServer();
         }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -128,9 +133,11 @@ public class MainActivity extends AppCompatActivity {
         if (userId == null)
             DialogHelper.selectUserDialog(this, prefs, "Choose your user");
     }
-
+    private void requestClientOrServer() {
+        DialogHelper.selectClientOrServerDialog(this,prefs);
+    }
     private void requestIp() {
-        DialogHelper.selectClientOrServerDialog(this,prefs,"Enter server IP or leave blank:");
+        DialogHelper.serverIPDialog(this,prefs,"Enter IP or leave blank for receiving IP via SMS");
     }
     private void requestPermissionForLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

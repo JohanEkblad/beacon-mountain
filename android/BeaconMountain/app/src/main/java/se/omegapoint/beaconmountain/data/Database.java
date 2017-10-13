@@ -6,6 +6,7 @@ import java.util.Map;
 public class Database {
     private static Map<String,ClientData> database = new HashMap<String,ClientData>();
     private static String serverIp = null;
+    private static Boolean isClient = null;
 
     public static void update(ClientData clientData) {
         database.put(clientData.getNickname(),clientData);
@@ -21,5 +22,13 @@ public class Database {
 
     public static String getServerIp(){
         return serverIp;
+    }
+
+    public static void setIsClient(Boolean isClient) {
+        Database.isClient = isClient;
+    }
+
+    public static Boolean isClient() {
+        return isClient;
     }
 }

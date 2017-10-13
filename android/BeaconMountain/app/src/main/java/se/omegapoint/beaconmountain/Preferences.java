@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Preferences {
-	public static final String PREFS_NAME = "LocHatPrefs";
+	public static final String PREFS_NAME = "BeaconMountainPrefs";
 	private SharedPreferences settings;
 	private SharedPreferences.Editor editor;
 	
@@ -17,6 +17,12 @@ public class Preferences {
 		return settings.getString("user_id", null);
 	}
 
+	public String getServerIp() {
+		return settings.getString("server_ip", null);
+	}
+
+	public boolean isClient() {return settings.getBoolean("is_client", true);}
+
 	public void setUserId(String user_id){
 		editor.putString("user_id", user_id).commit();
 	}
@@ -25,8 +31,7 @@ public class Preferences {
 		editor.putString("server_ip", serverIp).commit();
 	}
 
-	public String getServerIp() {
-		return settings.getString("server_ip", null);
-	}
+	public void setIsClient(boolean isClient) {editor.putBoolean("is_client", isClient).commit();}
+
 
 }
