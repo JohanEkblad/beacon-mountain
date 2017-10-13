@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         messages = (TextView)findViewById(R.id.messages);
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayMessages();
+            }
+        });
 
         prefs = new Preferences(this);
         startService(new Intent(this, DataService.class));
@@ -83,7 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
     public void startServer() {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -97,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         String msg = readOneMessage(client.getInputStream());
                         if (msg.startsWith("HELO")) {
                             ClientData clientData = new ClientData(msg);
-                            displayMessage(clientData.toString());
+                            //displayMessage(clientData.toString());
                             Database.update(clientData);
                             Log.v("msg", "message parsed");
                             sendAnswerMessage(client.getOutputStream(), clientData);
@@ -115,8 +125,13 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void displayMessage(String message){
-        messages.setText(message + "\n" + messages.getText());
+
+    private void displayMessages(){
+        String clientDatas = "";
+        for(ClientData c : Database.getClients()){
+            clientDatas += c.toString() + "\n";
+        }
+        messages.setText(clientDatas);
     }
 
     @Override
