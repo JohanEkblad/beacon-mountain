@@ -8,11 +8,15 @@ import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -43,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
                     Socket client;
                     while((client = serverSocket.accept()) != null) {
                         Log.v("client", client.toString());
+                        String msg = readOneMessage(client.getInputStream());
+                        if (msg.startsWith("HELO")) {
+                            Log.v("msg", "hello message detected");
+                            sendOneMessage("YOLO", client.getOutputStream());
+                            client.close();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -102,4 +112,27 @@ public class MainActivity extends AppCompatActivity {
             service = null;
         }
     };
+
+    @NonNull
+    private String readOneMessage(InputStream inputStream) throws IOException {
+        String msg = "";
+        int c = 0;
+        while ((c = inputStream.read()) != -1) {
+            Log.v("input",""+(char)c);
+            if (c == '\0') {
+                break;
+            }
+            msg += (char) c;
+        }
+        Log.v("incoming msg",msg);
+        return msg;
+    }
+
+    private void sendOneMessage(String msg, final OutputStream outputStream) throws IOException {
+        Log.v("outgoing msg", msg);
+        for(byte b : msg.getBytes()) {
+            outputStream.write(b);
+        }
+        outputStream.flush();
+    }
 }
