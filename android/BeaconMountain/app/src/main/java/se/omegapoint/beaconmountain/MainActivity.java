@@ -66,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, DataService.class));
+        super.onDestroy();
+
+    }
+
     private void requestUserId() {
         String userId = prefs.getUserId();
         if (userId == null)
