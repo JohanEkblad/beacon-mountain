@@ -21,4 +21,12 @@ public class Preferences {
 		editor.putString("user_id", user_id).commit();
 	}
 
+	public void setServerIp(String serverIp) {
+		editor.putString("server_ip", serverIp).commit();
+	}
+
+	public String getServerIp() {
+		return settings.getString("server_ip", null);
+	}
+
 }
