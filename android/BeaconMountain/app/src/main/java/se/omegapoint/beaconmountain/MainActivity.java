@@ -32,7 +32,6 @@ import se.omegapoint.beaconmountain.data.ClientData;
 
 import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
 import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
-import static se.omegapoint.beaconmountain.MessageSenderHelper.sendOneMessage;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();

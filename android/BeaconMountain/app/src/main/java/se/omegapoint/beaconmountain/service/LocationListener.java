@@ -16,6 +16,7 @@ import javax.net.SocketFactory;
 
 import se.omegapoint.beaconmountain.MessageSenderHelper;
 import se.omegapoint.beaconmountain.Preferences;
+import se.omegapoint.beaconmountain.data.ClientData;
 import se.omegapoint.beaconmountain.data.Database;
 
 
@@ -92,6 +93,7 @@ public class LocationListener implements android.location.LocationListener {
                 try {
                     Socket socket = SocketFactory.getDefault().createSocket(prefs.getServerIp(), 4711);
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
+
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
                     Log.v(TAG, "Got message: " + msg);
                     socket.close();
