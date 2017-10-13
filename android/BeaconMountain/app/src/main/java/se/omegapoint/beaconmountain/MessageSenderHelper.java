@@ -21,7 +21,7 @@ public class MessageSenderHelper {
         String msg = "";
         int c = 0;
         while ((c = inputStream.read()) != -1) {
-            Log.v("input",""+(char)c);
+            //Log.v("input",""+(char)c);
             if (c == '\0') {
                 break;
             }
