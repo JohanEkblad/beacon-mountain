@@ -90,7 +90,7 @@ public class LocationListener implements android.location.LocationListener {
     private class SendLocationTask extends AsyncTask<Location, Integer, Void> {
         protected Void doInBackground(Location... location) {
             Log.v(TAG, "Doing stuff in background");
-            if (Database.getServerIp() != null) {
+            if (Database.getServerIp() != null && Database.isClient()) {
                 try {
                     Socket socket = SocketFactory.getDefault().createSocket(Database.getServerIp(), 4711);
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
