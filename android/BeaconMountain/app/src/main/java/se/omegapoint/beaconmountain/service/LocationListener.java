@@ -27,7 +27,7 @@ import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage
 
 public class LocationListener implements android.location.LocationListener {
     private static final String TAG = LocationListener.class.getSimpleName();
-    public static final int GPS_MIN_TIME_MILLIS = 10 * 1000; //10 seconds
+    public static final int GPS_MIN_TIME_MILLIS = 1 * 1000; //1 second
     private static final int POSITION_ACCURACY = 50;
     private static final int MINIMAL_DISTANCE = 25;
 
