@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.ContactsContract;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Preferences prefs;
 
     private TextView messages;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,31 +68,24 @@ public class MainActivity extends AppCompatActivity {
         if (Database.isClient() == null) {
             requestClientOrServer();
         }
-        //if (Database.isClient() != null && Database.isClient()) {
-        //    requestIp();
-        //}
-        if (Database.isClient() != null && Database.isClient()) {
-            startClient();
-        } else if (Database.isClient() != null && !Database.isClient()){
-            startServer();
-        }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(Database.isClient())
+                    return;
                 pickContact();
             }
         });
 
+        if (Database.isClient() != null && !Database.isClient()){
+            startServer();
+        }
+
+
     }
-
-    public void startClient() {
-        //TODO
-
-    }
-
-
-
 
     public void startServer() {
 
@@ -111,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
                             Database.update(clientData);
                             Log.v("msg", "message parsed");
                             sendAnswerMessage(client.getOutputStream(), clientData);
+                            try {
+                                Thread.sleep(50);
+                            } catch (Exception e)
+                            {
+
+                            }
                             client.close();
                         } else {
                             Log.v("msg", "YAPP error");
@@ -189,6 +190,13 @@ public class MainActivity extends AppCompatActivity {
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+    }
+
+    public void hideFabButton(){
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setAnchorId(View.NO_ID);
+        fab.setLayoutParams(p);
+        fab.setVisibility(View.GONE);
     }
 
     @Override
