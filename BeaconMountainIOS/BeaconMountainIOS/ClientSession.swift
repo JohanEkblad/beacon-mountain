@@ -29,7 +29,7 @@ class ClientSession: NSObject, StreamDelegate {
     
     func handle(message: String) {
         if (message.starts(with: "HELO")) {
-            var reply = "YOLO"
+            let reply = "YOLO"
             var data = reply.data(using: String.Encoding.utf8)!
             
             data.withUnsafeBytes {
