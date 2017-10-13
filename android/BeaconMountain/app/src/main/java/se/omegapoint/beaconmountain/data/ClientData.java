@@ -19,7 +19,6 @@ public class ClientData {
         double lat = -1d;
         double lng = -1d;
         for(int i=2; i<split.length; i++) {
-            System.out.println("mod;" + i%3);
             if(i%3==0) {
                 Double.parseDouble(split[i]);
             } else if(i%3==1) {
