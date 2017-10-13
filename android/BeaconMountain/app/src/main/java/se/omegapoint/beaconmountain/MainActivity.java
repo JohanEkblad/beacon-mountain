@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,7 +22,9 @@ import java.net.Socket;
 import javax.net.ServerSocketFactory;
 import android.widget.Toast;
 
+import se.omegapoint.beaconmountain.data.Database;
 import se.omegapoint.beaconmountain.service.DataService;
+import se.omegapoint.beaconmountain.data.ClientData;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -49,10 +50,16 @@ public class MainActivity extends AppCompatActivity {
                         Log.v("client", client.toString());
                         String msg = readOneMessage(client.getInputStream());
                         if (msg.startsWith("HELO")) {
-                            Log.v("msg", "hello message detected");
-                            sendOneMessage("YOLO", client.getOutputStream());
+                            ClientData clientData = new ClientData(msg);
+                            Database.update(clientData);
+                            Log.v("msg", "message parsed");
+                            sendAnswerMessage(client.getOutputStream(), clientData);
+                            client.close();
+                        } else {
+                            Log.v("msg", "YAPP error");
                             client.close();
                         }
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -128,10 +135,36 @@ public class MainActivity extends AppCompatActivity {
         return msg;
     }
 
-    private void sendOneMessage(String msg, final OutputStream outputStream) throws IOException {
-        Log.v("outgoing msg", msg);
-        for(byte b : msg.getBytes()) {
+    private void sendString( final OutputStream outputStream, String string) throws IOException {
+        for(byte b : string.getBytes()) {
             outputStream.write(b);
+        }
+
+    }
+
+    private void sendSeparator(final OutputStream outputStream) throws IOException {
+        outputStream.write(':');
+    }
+
+    private void sendAnswerMessage(final OutputStream outputStream, ClientData clientData) throws IOException {
+        String initString=clientData.answer()?"DATA":"YOLO";
+        Log.v("outgoing msg", initString);
+        for(byte b : initString.getBytes()) {
+            outputStream.write(b);
+        }
+        if (clientData.answer()) {
+            ClientData clients[] = Database.getClients();
+            sendSeparator(outputStream);
+            sendString(outputStream,""+clients.length);
+            for (ClientData client:clients) {
+                sendSeparator(outputStream);
+                sendString(outputStream, client.getNickname());
+                sendSeparator(outputStream);
+                sendString(outputStream, ""+client.getLatitude());
+                sendSeparator(outputStream);
+                sendString(outputStream, ""+client.getLongitude());
+            }
+
         }
         outputStream.write('\0');
         outputStream.flush();
