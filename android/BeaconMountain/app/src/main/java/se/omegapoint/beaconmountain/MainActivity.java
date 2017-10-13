@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayMessages(){
         String clientDatas = "";
         for(ClientData c : Database.getClients()){
-            clientDatas += c.toString() + "\n";
+            clientDatas += c.distanceString() + "\n";
         }
         messages.setText(clientDatas);
     }

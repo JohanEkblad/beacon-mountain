@@ -105,4 +105,16 @@ public class ClientData {
         return sb.toString();
     }
 
+    public String distanceString(){
+        StringBuffer sb = new StringBuffer("");
+        sb.append(nickname);
+        Location ownLocation = Database.getLastLocation();
+        if(location!= null && ownLocation != null)
+            sb.append(" - distance: ").append(location.distanceTo(Database.getLastLocation()));
+        else
+            sb.append(" either own location or remote location not retrieved");
+        return sb.toString();
+    }
+
+
 }
