@@ -111,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
                             Database.update(clientData);
                             Log.v("msg", "message parsed");
                             sendAnswerMessage(client.getOutputStream(), clientData);
+                            try {
+                                Thread.sleep(50);
+                            } catch (Exception e)
+                            {
+
+                            }
                             client.close();
                         } else {
                             Log.v("msg", "YAPP error");
