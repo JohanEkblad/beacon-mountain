@@ -9,12 +9,14 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import se.omegapoint.beaconmountain.data.Database;
+
 /**
  * Created by matper on 2017-10-13.
  */
 
 public class SmsReciever extends BroadcastReceiver {
-
+    private static final String TAG = MainActivity.class.getSimpleName();
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
 
@@ -36,6 +38,12 @@ public class SmsReciever extends BroadcastReceiver {
 
                     String senderNum = phoneNumber;
                     String message = currentMessage.getDisplayMessageBody();
+
+                    if(message.startsWith((Utils.APP_NAME))){
+                        String ipNumber = message.split(":")[1];
+                        Log.v(TAG, "Storing IP:" + ipNumber);
+                        Database.setServerIp(ipNumber);
+                    }
 
                     Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 

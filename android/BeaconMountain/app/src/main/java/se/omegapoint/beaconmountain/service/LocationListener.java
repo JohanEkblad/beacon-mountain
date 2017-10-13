@@ -16,6 +16,7 @@ import javax.net.SocketFactory;
 
 import se.omegapoint.beaconmountain.MessageSenderHelper;
 import se.omegapoint.beaconmountain.Preferences;
+import se.omegapoint.beaconmountain.data.Database;
 
 
 public class LocationListener implements android.location.LocationListener {
@@ -76,6 +77,11 @@ public class LocationListener implements android.location.LocationListener {
     private void notifyLocationUpdate(Location location) {
         Log.v(TAG, "Sending broadcast");
         Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":Y\0");
+        if(Database.getServerIp() != null) {
+            Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + "Y:\0");
+        }else{
+            Log.v(TAG, "Server IP not known. Would've sent: " + location);
+        }
         new SendLocationTask().execute(location);
     }
 
@@ -103,6 +109,7 @@ public class LocationListener implements android.location.LocationListener {
         protected void onPostExecute(Long result) {
 
         }
+
     }
 
 }

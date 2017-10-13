@@ -9,6 +9,8 @@ import java.util.*;
 
 public class Utils {
 
+    static final String APP_NAME = "BeaconMountain";
+
     public static String getIPAddress() {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -31,7 +33,7 @@ public class Utils {
 
     public static void sendSms(AppCompatActivity activity, String message, String srcNumber){
         Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "sms:" + srcNumber));
-        intent.putExtra( "sms_body", "BeaconMountain:" + message );
+        intent.putExtra( "sms_body", APP_NAME + ":" + message );
         activity.startActivity(intent);
     }
 
