@@ -41,7 +41,7 @@ public class LocationListener implements android.location.LocationListener {
         if (prefs.getUserId() == null)
             return;
 
-        if (location.getAccuracy() < POSITION_ACCURACY) {
+        //if (location.getAccuracy() < POSITION_ACCURACY) {
             //activity.addText("Got accurate location: " + location.getAccuracy());
             Log.v(TAG, "Got accurate location: " + location.getAccuracy());
             if (lastLocation == null) { //First location, store it
@@ -52,9 +52,9 @@ public class LocationListener implements android.location.LocationListener {
                 }
             }
             lastLocation = location;
-        } else {
-            Log.v(TAG, "Got inaccurate location: " + location.getAccuracy());
-        }
+        //} else {
+        //    Log.v(TAG, "Got inaccurate location: " + location.getAccuracy());
+        //}
     }
 
     @Override
@@ -90,7 +90,9 @@ public class LocationListener implements android.location.LocationListener {
     private class SendLocationTask extends AsyncTask<Location, Integer, Void> {
         protected Void doInBackground(Location... location) {
             Log.v(TAG, "Doing stuff in background");
-            if (Database.getServerIp() != null) {
+            if (Database.getServerIp() != null && Database.isClient()) {
+                Log.v(TAG, "ServerIP:" + Database.getServerIp());
+
                 try {
                     Socket socket = SocketFactory.getDefault().createSocket(Database.getServerIp(), 4711);
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
