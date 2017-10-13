@@ -73,6 +73,12 @@ public class DialogHelper {
 
         alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                if(Database.isClient() == null) {
+                    Database.setIsClient(true);
+                }
+                if(Database.isClient()) {
+                    serverIPDialog(activity, prefs, "Enter IP or leave blank for receiving IP via SMS");
+                }
             }
         });
 

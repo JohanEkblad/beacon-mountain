@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
         if (Database.isClient() == null) {
             requestClientOrServer();
         }
-        if (Database.isClient() != null && Database.isClient()) {
-            requestIp();
-        }
+        //if (Database.isClient() != null && Database.isClient()) {
+        //    requestIp();
+        //}
         if (Database.isClient() != null && Database.isClient()) {
             startClient();
         } else if (Database.isClient() != null && !Database.isClient()){
@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
     private void requestClientOrServer() {
         DialogHelper.selectClientOrServerDialog(this,prefs);
     }
-    private void requestIp() {
-        DialogHelper.serverIPDialog(this,prefs,"Enter IP or leave blank for receiving IP via SMS");
-    }
+//    private void requestIp() {
+//        DialogHelper.serverIPDialog(this,prefs,"Enter IP or leave blank for receiving IP via SMS");
+//    }
     private void requestPermissionForLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
