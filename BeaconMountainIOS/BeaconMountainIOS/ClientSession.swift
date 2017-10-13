@@ -52,7 +52,7 @@ class ClientSession: NSObject, StreamDelegate {
             eofStringIndex = self.data.index(of: 0)
         }
     }
-    
+
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         if (aStream == self.inputStream && eventCode == .hasBytesAvailable) {
             let bufferSize = 1024
