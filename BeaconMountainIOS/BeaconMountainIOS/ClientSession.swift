@@ -48,9 +48,9 @@ class ClientSession: NSObject, StreamDelegate {
             let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize + 1)
             var data = Data()
             let read = self.inputStream.read(buffer, maxLength: bufferSize)
-            data.append(buffer)
+            data.append(buffer, count: read)
             buffer[read] = 0
-            var message = String(cString: buffer)
+            let message = String(cString: buffer)
             buffer.deallocate(capacity: bufferSize)
             
             os_log("%@", message)
