@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import se.omegapoint.beaconmountain.service.DataService;
 
+import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
+import static se.omegapoint.beaconmountain.MessageSenderHelper.sendOneMessage;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startClient() {
         //TODO
+
     }
 
     private void startServer() {
@@ -129,27 +133,4 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @NonNull
-    private String readOneMessage(InputStream inputStream) throws IOException {
-        String msg = "";
-        int c = 0;
-        while ((c = inputStream.read()) != -1) {
-            Log.v("input",""+(char)c);
-            if (c == '\0') {
-                break;
-            }
-            msg += (char) c;
-        }
-        Log.v("incoming msg",msg);
-        return msg;
-    }
-
-    private void sendOneMessage(String msg, final OutputStream outputStream) throws IOException {
-        Log.v("outgoing msg", msg);
-        for(byte b : msg.getBytes()) {
-            outputStream.write(b);
-        }
-        outputStream.write('\0');
-        outputStream.flush();
-    }
 }
