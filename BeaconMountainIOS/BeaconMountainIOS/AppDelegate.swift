@@ -7,14 +7,16 @@
 //
 
 import UIKit
+import CoreLocation
 import os.log
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, NetServiceDelegate, StreamDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, NetServiceDelegate, StreamDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
     var server: NetService?
     var clientSession: ClientSession?
+    var locationManager:CLLocationManager!
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -48,6 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NetServiceDelegate, Strea
         self.server?.stop()
         self.clientSession?.close()
         self.clientSession = nil
+        self.locationManager.stopUpdatingLocation()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -58,12 +61,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, NetServiceDelegate, Strea
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        determineMyCurrentLocation()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func determineMyCurrentLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+            //locationManager.startUpdatingHeading()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLocation:CLLocation = locations[0] as CLLocation
+        
+        // Call stopUpdatingLocation() to stop listening for location updates,
+        // other wise this function will be called every time when user location changes.
+        
+        // manager.stopUpdatingLocation()
+        
+        print("user latitude = \(userLocation.coordinate.latitude)")
+        print("user longitude = \(userLocation.coordinate.longitude)")
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Error \(error)")
+    }
 
 }
 

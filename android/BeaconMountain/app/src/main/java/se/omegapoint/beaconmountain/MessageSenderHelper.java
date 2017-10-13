@@ -40,14 +40,14 @@ public class MessageSenderHelper {
         outputStream.flush();
     }
 
-    public static void sendString( final OutputStream outputStream, String string) throws IOException {
+    private static void sendString( final OutputStream outputStream, String string) throws IOException {
         for(byte b : string.getBytes()) {
             outputStream.write(b);
         }
 
     }
 
-    public static void sendSeparator(final OutputStream outputStream) throws IOException {
+    private static void sendSeparator(final OutputStream outputStream) throws IOException {
         outputStream.write(':');
     }
 

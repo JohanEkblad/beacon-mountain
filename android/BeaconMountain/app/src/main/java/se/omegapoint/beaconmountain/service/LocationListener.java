@@ -17,7 +17,11 @@ import javax.net.SocketFactory;
 
 import se.omegapoint.beaconmountain.MessageSenderHelper;
 import se.omegapoint.beaconmountain.Preferences;
+import se.omegapoint.beaconmountain.data.ClientData;
 import se.omegapoint.beaconmountain.data.Database;
+
+import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
+import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
 
 
 public class LocationListener implements android.location.LocationListener {
@@ -40,7 +44,7 @@ public class LocationListener implements android.location.LocationListener {
         if (prefs.getUserId() == null)
             return;
 
-        if (location.getAccuracy() < POSITION_ACCURACY) {
+        //if (location.getAccuracy() < POSITION_ACCURACY) {
             //activity.addText("Got accurate location: " + location.getAccuracy());
             Log.v(TAG, "Got accurate location: " + location.getAccuracy());
             if (lastLocation == null) { //First location, store it
@@ -51,9 +55,9 @@ public class LocationListener implements android.location.LocationListener {
                 }
             }
             lastLocation = location;
-        } else {
-            Log.v(TAG, "Got inaccurate location: " + location.getAccuracy());
-        }
+        //} else {
+        //    Log.v(TAG, "Got inaccurate location: " + location.getAccuracy());
+        //}
     }
 
     @Override
@@ -76,6 +80,7 @@ public class LocationListener implements android.location.LocationListener {
         Log.v(TAG, "Sending broadcast");
         if(location == null)
             return;
+        Database.setLastLocation(location);
         Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":Y\0");
         if(Database.getServerIp() != null) {
             Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + "Y:\0");
@@ -88,11 +93,22 @@ public class LocationListener implements android.location.LocationListener {
     private class SendLocationTask extends AsyncTask<Location, Integer, Void> {
         protected Void doInBackground(Location... location) {
             Log.v(TAG, "Doing stuff in background");
-            if (prefs.getServerIp() != null) {
+            if (Database.getServerIp() != null && Database.isClient()) {
+                Log.v(TAG, "ServerIP:" + Database.getServerIp());
+
                 try {
-                    Socket socket = SocketFactory.getDefault().createSocket(prefs.getServerIp(), 4711);
+                    Socket socket = SocketFactory.getDefault().createSocket(Database.getServerIp(), 4711);
                     MessageSenderHelper.sendOneMessage("HELO:" + prefs.getUserId() + ":" + location[0].getLatitude() + ":" + location[0].getLongitude() + ":Y\0", socket.getOutputStream());
+
                     String msg = MessageSenderHelper.readOneMessage(socket.getInputStream());
+                    if (msg.startsWith("HELO")) {
+                        ClientData clientData = new ClientData(msg);
+                        //displayMessage(clientData.toString());
+                        Database.update(clientData);
+                        Log.v("msg", "message parsed");
+                    } else {
+                        Log.v("msg", "YAPP error");
+                    }
                     Log.v(TAG, "Got message: " + msg);
                     socket.close();
                 } catch (IOException e) {

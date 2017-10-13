@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.ContactsContract;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.annotation.NonNull;
@@ -24,6 +26,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.net.ServerSocketFactory;
+
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import se.omegapoint.beaconmountain.data.Database;
@@ -32,7 +37,6 @@ import se.omegapoint.beaconmountain.data.ClientData;
 
 import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
 import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
-import static se.omegapoint.beaconmountain.MessageSenderHelper.sendOneMessage;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -42,28 +46,49 @@ public class MainActivity extends AppCompatActivity {
     private DataService service;
     private Preferences prefs;
 
+    private TextView messages;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        messages = (TextView)findViewById(R.id.messages);
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayMessages();
+            }
+        });
+
         prefs = new Preferences(this);
         startService(new Intent(this, DataService.class));
         requestUserId();
-        requestIp();
-        if (prefs.getServerIp() != null) {
-            startClient();
-        } else {
+        if (Database.isClient() == null) {
+            requestClientOrServer();
+        }
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Database.isClient())
+                    return;
+                pickContact();
+            }
+        });
+
+        if (Database.isClient() != null && !Database.isClient()){
             startServer();
         }
-    }
 
-    private void startClient() {
-        //TODO
 
     }
 
-    private void startServer() {
+    public void startServer() {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,9 +102,16 @@ public class MainActivity extends AppCompatActivity {
                         String msg = readOneMessage(client.getInputStream());
                         if (msg.startsWith("HELO")) {
                             ClientData clientData = new ClientData(msg);
+                            //displayMessage(clientData.toString());
                             Database.update(clientData);
                             Log.v("msg", "message parsed");
                             sendAnswerMessage(client.getOutputStream(), clientData);
+                            try {
+                                Thread.sleep(50);
+                            } catch (Exception e)
+                            {
+
+                            }
                             client.close();
                         } else {
                             Log.v("msg", "YAPP error");
@@ -92,10 +124,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-        prefs = new Preferences(this);
-        startService(new Intent(this, DataService.class));
-        requestUserId();
-        pickContact();
+    }
+
+
+    private void displayMessages(){
+        String clientDatas = "";
+        for(ClientData c : Database.getClients()){
+            clientDatas += c.toString() + "\n";
+        }
+        messages.setText(clientDatas);
     }
 
     @Override
@@ -122,10 +159,12 @@ public class MainActivity extends AppCompatActivity {
         if (userId == null)
             DialogHelper.selectUserDialog(this, prefs, "Choose your user");
     }
-
-    private void requestIp() {
-        DialogHelper.selectClientOrServerDialog(this,prefs,"Enter server IP or leave blank:");
+    private void requestClientOrServer() {
+        DialogHelper.selectClientOrServerDialog(this,prefs);
     }
+//    private void requestIp() {
+//        DialogHelper.serverIPDialog(this,prefs,"Enter IP or leave blank for receiving IP via SMS");
+//    }
     private void requestPermissionForLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -151,6 +190,13 @@ public class MainActivity extends AppCompatActivity {
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+    }
+
+    public void hideFabButton(){
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setAnchorId(View.NO_ID);
+        fab.setLayoutParams(p);
+        fab.setVisibility(View.GONE);
     }
 
     @Override
