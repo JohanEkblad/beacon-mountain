@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         for(byte b : msg.getBytes()) {
             outputStream.write(b);
         }
+        outputStream.write('\0');
         outputStream.flush();
     }
 }
