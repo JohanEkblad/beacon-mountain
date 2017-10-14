@@ -1,5 +1,9 @@
 # beacon-mountain
-P2P position app. This is a phone app that can act both as a server and as a client. All clients send their nickname and position to the server. The server keep track on all connected clients and return their positions when a client post a new location. NOTE: All communication is directly between the phones via GPRS (no data is stored anywhere except on the phone acting as a server)  
+P2P position app. This is a phone app that can act both as a server and as a client. All clients send their nickname and position to the server. The server keep track on all connected clients and return their positions when a client post a new location. 
+
+NOTE1: All communication is directly between the phones via GPRS (no data is stored anywhere except on the phone acting as a server) 
+
+NOTE2: If you are using WIFI on your phone, this app will most probably not work since it's behind a firewall and/or you have a private IP number. 
 
 The app is written for Android and IOS
 
@@ -34,7 +38,9 @@ IOS:
 
 ## Protocol
 
-The protocol between the client and server app's is named YAPP (Yet Another Protocol Protocol). As mentioned above, all communication is initiated from the clients
+The protocol between the client and server app's is named YAPP (Yet Another Protocol Protocol). As mentioned above, all communication is initiated from the client. 
+
+The app acting as a server is listening on port 4711
 
 Currently the protocol looks like this (NOTE breaking changes might be coming):
 
