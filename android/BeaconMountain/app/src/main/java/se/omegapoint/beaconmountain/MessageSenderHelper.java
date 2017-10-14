@@ -21,7 +21,6 @@ public class MessageSenderHelper {
         String msg = "";
         int c = 0;
         while ((c = inputStream.read()) != -1) {
-            //Log.v("input",""+(char)c);
             if (c == '\0') {
                 break;
             }
@@ -40,39 +39,22 @@ public class MessageSenderHelper {
         outputStream.flush();
     }
 
-    private static void sendString( final OutputStream outputStream, String string) throws IOException {
-        for(byte b : string.getBytes()) {
-            outputStream.write(b);
-        }
-
-    }
-
-    private static void sendSeparator(final OutputStream outputStream) throws IOException {
-        outputStream.write(':');
-    }
-
     public static void sendAnswerMessage(final OutputStream outputStream, ClientData clientData) throws IOException {
-        String initString=clientData.answer()?"DATA":"YOLO";
-        Log.v("outgoing msg", initString);
-        for(byte b : initString.getBytes()) {
-            outputStream.write(b);
-        }
+        StringBuffer sb=new StringBuffer();
+        sb.append(clientData.answer()?"DATA":"YOLO");
         if (clientData.answer()) {
             ClientData clients[] = Database.getClients();
-            sendSeparator(outputStream);
-            sendString(outputStream,""+clients.length);
+            sb.append(':');
+            sb.append(clients.length);
             for (ClientData client:clients) {
-                sendSeparator(outputStream);
-                sendString(outputStream, client.getNickname());
-                sendSeparator(outputStream);
-                sendString(outputStream, ""+client.getLatitude());
-                sendSeparator(outputStream);
-                sendString(outputStream, ""+client.getLongitude());
+                sb.append(':');
+                sb.append(client.getNickname());
+                sb.append(':');
+                sb.append(client.getLatitude());
+                sb.append(':');
+                sb.append(client.getLongitude());
             }
-
         }
-        outputStream.write('\0');
-        outputStream.flush();
+        sendOneMessage(sb.toString(), outputStream);
     }
-
 }

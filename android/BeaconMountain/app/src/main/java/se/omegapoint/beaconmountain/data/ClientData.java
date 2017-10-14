@@ -47,7 +47,7 @@ public class ClientData {
     public ClientData(String protocolMessage) {
         String parts[] = protocolMessage.split(":");
         if (parts.length != 5) { // HELO:NICK:54.444:12:34:N
-            throw new RuntimeException("Illegal number of prtocol parts");
+            throw new RuntimeException("Illegal number of protocol parts");
         }
         nickname=parts[1];
 

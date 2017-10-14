@@ -1,17 +1,13 @@
 package se.omegapoint.beaconmountain.service;
 
 
-import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URL;
 import java.util.List;
 
 import javax.net.SocketFactory;
@@ -21,14 +17,10 @@ import se.omegapoint.beaconmountain.Preferences;
 import se.omegapoint.beaconmountain.data.ClientData;
 import se.omegapoint.beaconmountain.data.Database;
 
-import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
-import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
-
 
 public class LocationListener implements android.location.LocationListener {
     private static final String TAG = LocationListener.class.getSimpleName();
     public static final int GPS_MIN_TIME_MILLIS = 1 * 1000; //1 second
-    private static final int POSITION_ACCURACY = 50;
     private static final int MINIMAL_DISTANCE = 25;
 
     private Preferences prefs;

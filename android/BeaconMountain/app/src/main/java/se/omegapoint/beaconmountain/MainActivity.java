@@ -8,33 +8,27 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.ContactsContract;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import javax.net.ServerSocketFactory;
 
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import se.omegapoint.beaconmountain.data.ClientData;
 import se.omegapoint.beaconmountain.data.Database;
 import se.omegapoint.beaconmountain.service.DataService;
-import se.omegapoint.beaconmountain.data.ClientData;
 
 import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
 import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
@@ -102,16 +96,17 @@ public class MainActivity extends AppCompatActivity {
                         Log.v("client", client.toString());
                         String msg = readOneMessage(client.getInputStream());
                         if (msg.startsWith("HELO")) {
-                            ClientData clientData = new ClientData(msg);
-                            //displayMessage(clientData.toString());
-                            Database.update(clientData);
-                            Log.v("msg", "message parsed");
-                            sendAnswerMessage(client.getOutputStream(), clientData);
                             try {
-                                Thread.sleep(50);
+                                ClientData clientData = new ClientData(msg);
+
+                                Database.update(clientData);
+                                Log.v("msg", "message parsed");
+                                sendAnswerMessage(client.getOutputStream(), clientData);
+
+                                Thread.sleep(50); //Have to give client time to read answer before closing connection
                             } catch (Exception e)
                             {
-
+                                Log.v("msg","Protocol error ("+e.getMessage()+")");
                             }
                             client.close();
                         } else {
