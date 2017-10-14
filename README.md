@@ -38,8 +38,8 @@ The protocol between the client and server app's is named YAPP (Yet Another Prot
 
 Currently the protocol looks like this (NOTE breaking changes might be coming):
 
-To server:
-----------
+### To server:
+
 <pre>
 HELO:&lt;nickname&gt;:&lt;latitude&gt;:&lt;longitude&gt;:&lt;answer&gt;\0
 
@@ -50,7 +50,27 @@ HELO:&lt;nickname&gt;:&lt;latitude&gt;:&lt;longitude&gt;:&lt;answer&gt;\0
             means the client want the nicknames and positions for all connected
             clients
 
-Example: HELO:NICK:54.3176:93.1234:N\0
+Example: HELO:Nick:54.3176:93.1234:N\0
+</pre>
+
+### From server:
+
+<pre>
+The 'N' case:
+
+YOLO\0
+
+The 'Y' case:
+
+DATA:&lt;number of records&gt;:&lt;nickname i&gt;:&lt;latitude i&gt;:&lt;longitude i&gt;\0
+&lt;number of records&gt; The number of connected clients (including the server)
+&lt;nickname i&gt;        i=1..&lt;number of records&gt; The name
+&lt;latitude i&gt;        i=1..&lt;number of records&gt; The latitude
+&lt;longitude i&gt;       i=1..&lt;number of records&gt; The longitude
+
+Example 1: DATA:0\0
+Example 2: DATA:2:Nick:54.3176:93.1234:Nina:54.3312:93.1245\0
+
 </pre>
 
 ## Possible enhancements
@@ -58,5 +78,5 @@ Example: HELO:NICK:54.3176:93.1234:N\0
 * Save position data more permanent (in a database) on the server
 * Let the server remember the nicknames in a group
 * Let the server give the group a name
-* Control the interval, how often the clients send thier positions to the server. (A dog might for example send their positions more often than other clients)
+* Control the interval, how often the clients send their positions to the server. (A dog might for example send their positions more often than other clients)
 
