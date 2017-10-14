@@ -82,6 +82,7 @@ public class LocationListener implements android.location.LocationListener {
         if(location == null)
             return;
         Database.setLastLocation(location);
+        Database.update(new ClientData(prefs.getUserId(), location.getLatitude(), location.getLongitude()));
         if(Database.getServerIp() != null) {
             Log.v(TAG, "HELO:" + prefs.getUserId() + ":" + location.getLatitude() + ":" + location.getLongitude() + ":?\0");
         }else{
@@ -120,6 +121,7 @@ public class LocationListener implements android.location.LocationListener {
                     e.printStackTrace();
                 }
             }
+
             return null;
         }
     }
