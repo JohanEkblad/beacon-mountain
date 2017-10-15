@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Yes, it's also possible to start a YAPP server somewhere on the Internet,
 # if you don't want to run the server on one of your phones
@@ -8,6 +8,7 @@
 
 import socket
 import sys
+from time import sleep
 
 peoples={}
 
@@ -41,8 +42,10 @@ def sendReply(connection, clientString):
   else:
     print('YAPP error: answer must be "Y" or "N"')
 
-  reply=reply+'\0'
-  connection.sendall(reply)
+  reply=reply+(b'\x00').decode(encoding="utf-8",errors="ignore")
+  print ("sent reply="+reply)
+  connection.sendall(reply.encode(encoding="utf-8",errors="ignore"))
+  sleep(0.05)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('', 4711)
@@ -53,16 +56,16 @@ while True:
   print('Waiting for a client connection')
   connection, client_address = sock.accept()
   try:
-    print('Connection from %s' % (client_address))
+    print('Connection from %s', client_address)
     clientString=''
     while True:
       data = connection.recv(1)
       if data:
-        if data == '\0':
+        if data == b'\x00':
           sendReply(connection,clientString)
           break;
         else:
-          clientString=clientString+data
+          clientString=clientString+data.decode(encoding="utf-8",errors="ignore")
       else:
         break;
   finally:

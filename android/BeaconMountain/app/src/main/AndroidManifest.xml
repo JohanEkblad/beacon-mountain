@@ -30,6 +30,11 @@
         <service
             android:name=".service.DataService"
             android:label="@string/service_name"></service>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC8_GXajDR-2E31VGwzkBER8I4jnqQL3PE"/>
     </application>
-
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 </manifest>

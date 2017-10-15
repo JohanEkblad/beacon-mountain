@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
@@ -20,7 +23,7 @@ import se.omegapoint.beaconmountain.data.Database;
 
 public class LocationListener implements android.location.LocationListener {
     private static final String TAG = LocationListener.class.getSimpleName();
-    public static final int GPS_MIN_TIME_MILLIS = 1 * 1000; //1 second
+    public static final int GPS_MIN_TIME_MILLIS = 10 * 1000; //10 second
     private static final int MINIMAL_DISTANCE = 25;
 
     private Preferences prefs;
@@ -43,9 +46,9 @@ public class LocationListener implements android.location.LocationListener {
             if (lastLocation == null) { //First location, store it
                 notifyLocationUpdate(location);
             } else {
-                if (location.distanceTo(lastLocation) > MINIMAL_DISTANCE) {
+                //if (location.distanceTo(lastLocation) > MINIMAL_DISTANCE) {
                     notifyLocationUpdate(location);
-                }
+                //}
             }
             lastLocation = location;
         //} else {

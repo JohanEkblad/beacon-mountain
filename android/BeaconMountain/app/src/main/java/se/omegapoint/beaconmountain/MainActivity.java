@@ -20,6 +20,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,7 +39,7 @@ import se.omegapoint.beaconmountain.service.DataService;
 import static se.omegapoint.beaconmountain.MessageSenderHelper.readOneMessage;
 import static se.omegapoint.beaconmountain.MessageSenderHelper.sendAnswerMessage;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_SMS = 1235;
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private DataService service;
     private Preferences prefs;
 
+    private MapFragment map;
     private TextView messages;
     private FloatingActionButton fab;
 
@@ -56,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 displayMessages();
             }
         });
+
+        MapFragment map = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        map.getMapAsync(this);
 
         prefs = new Preferences(this);
         startService(new Intent(this, DataService.class));
@@ -234,4 +244,20 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        final GoogleMap mapf = map;
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latlng) {
+                for (ClientData cd : Database.getClients()) {
+                    mapf.addMarker(new MarkerOptions()
+                            .position(new LatLng(cd.getLatitude(), cd.getLongitude()))
+                            .title(cd.getNickname()));
+                }
+
+            }
+        });
+    }
 }
